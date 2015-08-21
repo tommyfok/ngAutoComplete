@@ -31,4 +31,6 @@ $scope.fnParser = function (item) {
      nac-parser="fnParser"
      placeholder="Type in package name."></div>
 ```
+## ScreenShot
+![ScreenShot](https://tommyfok.github.io/ngAutoComplete/screenshot.png)
 > too lazy to write more...
