@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html ng-app="myTest">
+<head>
+  <title>test</title>
+  <script src="http://static.wsd.com/bower_components/angular/angular.js"></script>
+  <script src="ngAutoComplete.js"></script>
+</head>
+<body ng-controller="TestCtrl">
+<div ng-auto-complete nac-data="data" ng-model="input"></div>
+</body>
+  <script>
+  angular.module('myTest', ['ngAutoComplete'])
+  .controller('TestCtrl', function ($scope) {
+    $scope.data = ['123123','woshinideyan','我是好人，你也是好人，你全家都是好人','呵呵大'];
+  });
+  </script>
+</html>
