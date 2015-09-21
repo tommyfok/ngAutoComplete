@@ -16,8 +16,8 @@ angular.module('ngCombo', [])
              +'    <div class="nacOuter" ng-show="showMorePkgs">'
              +'      <div class="nacInner">'
              +'        <div ng-repeat="item in data | filter: inputArray[inputArray.length-1]">'
-             +'          <div class="unchecked" ng-if="inputArray.indexOf(item) === -1" ng-click="set(item)"> {{item}}</div>'
-             +'          <div class="checked" ng-if="inputArray.indexOf(item) > -1" ng-click="unset(item)"><i class="glyphicon glyphicon-ok"></i> {{item}}</div>'
+             +'          <div class="unchecked" ng-if="inputArray.indexOf(item) === -1" ng-click="set(item)">{{item}}</div>'
+             +'          <div class="checked" ng-if="inputArray.indexOf(item) > -1" ng-click="unset(item)">{{item}}<i class="glyphicon glyphicon-ok pull-right"></i></div>'
              +'        </div>'
              +'      </div>'
              +'    </div>'
@@ -58,10 +58,6 @@ angular.module('ngCombo', [])
         scope.inputArray.splice(scope.inputArray.indexOf(item), 1);
         scope.input = scope.inputArray.join(',');
       }
-
-      ngModelCtrl.$parsers.push(function (viewValue) {
-        console.log('viewValue')
-      });
     }
   };
 });
