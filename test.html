@@ -2,16 +2,32 @@
 <html ng-app="myTest">
 <head>
   <title>test</title>
+  <script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <link href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
   <script src="http://static.wsd.com/bower_components/angular/angular.js"></script>
   <script src="ngAutoComplete.js"></script>
+  <style>
+    input {
+      width: 100%;
+      line-height: 40px;
+      border-radius: 3px;
+      border: 1px solid #eee;
+      box-sizing: border-box;
+      padding: 0 10px;
+    }
+  </style>
 </head>
 <body ng-controller="TestCtrl">
-<div ng-auto-complete nac-data="data" ng-model="input"></div>
+<div ng-combo nc-data="data" ng-model="input"></div>
 </body>
   <script>
-  angular.module('myTest', ['ngAutoComplete'])
+  angular.module('myTest', ['ngCombo'])
   .controller('TestCtrl', function ($scope) {
-    $scope.data = ['123123','woshinideyan','我是好人，你也是好人，你全家都是好人','呵呵大'];
+    $scope.data = ['1测试','2开发','3设计','4运营', '5商务'];
+    window.onclick = function () {
+      $scope.input = '1测试,asdfas';
+    }
   });
   </script>
 </html>
