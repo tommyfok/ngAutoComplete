@@ -1,8 +1,6 @@
 # ngAutoComplete
 Auto Complete Module for AngularJS.
 
-Support multiple select.
-
 ## Installation
 1. With Bower :
    - `bower install --save ngAutoComplete`
