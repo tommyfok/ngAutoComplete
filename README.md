@@ -1,6 +1,8 @@
 # ngAutoComplete
 Auto Complete Module for AngularJS.
 
+## [DEMO](//tommyfok.github.io/ngAutoComplete/demo.html)
+
 ## Installation
 1. With Bower :
    - `bower install --save ngAutoComplete`
@@ -27,8 +29,10 @@ $scope.fnParser = function (item) {
 <div ng-auto-complete
      ng-model="pkgName"
      nac-data="pkgNames"
-     nac-formatter="fnFormatter"
+     clean-on-blur="true"
      nac-parser="fnParser"
+     onchange="fnOnchange"
+     nac-formatter="fnFormatter"
      placeholder="Type in package name."></div>
 ```
 ## ScreenShot

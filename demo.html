@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html ng-app="MyApp" ng-controller="GlobalController as g">
+<head>
+  <title>ngAutoComplete DEMO page.</title>
+  <link href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+  <link href="ngAutoComplete.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h3>clean-on-blur=true</h3>
+          <div ng-auto-complete
+               ng-model="test"
+               nac-data="data"
+               nac-formatter="fnFormatter"
+               nac-parser="fnParser"
+               clean-on-blur="true"
+               onchange="onchange"></div>
+          <h3>clean-on-blur=false</h3>
+          <div ng-auto-complete
+               ng-model="test2"
+               nac-data="data2"
+               onchange="onchange"></div>
+        </div>
+      </div>
+    </div>
+    <script src="http://cdn.bootcss.com/angular.js/1.4.7/angular.min.js"></script>
+    <script src="http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="ngAutoComplete.js"></script>
+    <script>
+        angular.module('MyApp', ['ngAutoComplete'])
+        .config(function ($sceProvider) {
+          $sceProvider.enabled(false);
+        })
+        .controller('GlobalController', function ($scope, $timeout) {
+          $scope.data = [{text: 'bootcss', id:1}, {text:'angular',id:2}, {text:'dragular',id:3}, {text:'test',id:4}, {text:'tommy',id:5}, {text:'wtf',id:6}];
+          $scope.data2 = ['1','2asdf','333123'];
+          $scope.onchange = function (item) {
+            console.log(item);
+          };
+          $scope.fnFormatter = function (item) {
+            return item.text;
+          };
+          $scope.fnParser = function (item) {
+            return item.id * 2;
+          };
+        });
+    </script>
+</body>
+</html>
