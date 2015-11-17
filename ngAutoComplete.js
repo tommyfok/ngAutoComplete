@@ -2,9 +2,9 @@ angular.module('ngAutoComplete', [])
 .directive('ngAutoComplete', function () {
   return {
     restrict: 'AE',
-    template: '<div class="nacContainer" ng-mouseleave="cleanIfEmpty()">'
+    template: '<div class="nacContainer" ng-mouseleave="leaved=true" ng-mouseenter="leaved=false">'
              +'    <input placeholder="{{placeholder}}" type="{{type||\'text\'}}"'
-             +'           ng-model="_input" class="form-control" ng-focus="showMorePkgs=true" ng-keyup="isOneOf=false">'
+             +'           ng-model="_input" class="form-control" ng-focus="showMorePkgs=true" ng-blur="cleanIfEmpty()" ng-keyup="isOneOf=false">'
              +'    <div class="nacOuter" ng-show="showMorePkgs">'
              +'      <div class="nacInner">'
              +'        <div ng-repeat="item in data | filter: _input"'
@@ -37,11 +37,13 @@ angular.module('ngAutoComplete', [])
       };
 
       $scope.cleanIfEmpty = function () {
-        if ($scope.cleanOnBlur && !$scope.isOneOf) {
-          $scope._input = '';
-          $scope.input = undefined;
-        } else if (!$scope.isOneOf) {
-          $scope.input = $scope._input;
+        if ($scope.leaved) {
+          if ($scope.cleanOnBlur && !$scope.isOneOf) {
+            $scope._input = '';
+            $scope.input = undefined;
+          } else if (!$scope.isOneOf) {
+            $scope.input = $scope._input;
+          }
         }
       }
 
