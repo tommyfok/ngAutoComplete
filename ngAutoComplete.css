@@ -1,0 +1,32 @@
+.nacContainer:hover .nacOuter {
+    display: block;
+}
+
+.nacOuter {
+    position: relative;
+    display: none;
+}
+
+.nacInner {
+    width: 100%;
+    max-height: 250px;
+    overflow: auto;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 10;
+    background: #fff;
+    border: 1px solid #eee;
+    border-top: none;
+    box-shadow: 0 0 5px rgba(0,0,0,.1);
+}
+
+.nacInner > div {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.nacInner > div:hover {
+    background: #fafafa;
+    color: #f60;
+}

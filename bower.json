@@ -1,6 +1,6 @@
 {
   "name": "ngAutoComplete",
-  "main": "ngAutoComplete.js",
+  "main": ["ngAutoComplete.js", "ngAutoComplete.css"],
   "homepage": "https://github.com/tommyfok/ngAutoComplete",
   "authors": [
     "tommyhuo <tommyhuo@tencent.com>"
