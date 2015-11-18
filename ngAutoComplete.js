@@ -28,6 +28,8 @@ angular.module('ngAutoComplete', [])
       $scope.formatter = angular.isFunction($scope.formatter) ? $scope.formatter : rawReturn;
       $scope.modelToOutput = angular.isFunction($scope.modelToOutput) ? $scope.modelToOutput : rawReturn;
 
+      var modifyModelFromInside;
+
       $scope.set = function (item) {
         $scope.selectedItem = item;
         $scope._input = $scope.formatter(item);
@@ -36,6 +38,7 @@ angular.module('ngAutoComplete', [])
         delete $scope.rawItem['$$hashKey'];
         $scope.isOneOf = true;
         $scope.showMorePkgs = false;
+        modifyModelFromInside = true;
       };
 
       $scope.cleanIfEmpty = function () {
@@ -43,18 +46,22 @@ angular.module('ngAutoComplete', [])
           if ($scope.cleanOnBlur && !$scope.isOneOf) {
             $scope._input = '';
             $scope.rawItem = $scope.input = undefined;
+            modifyModelFromInside = true;
           } else if (!$scope.isOneOf) {
             $scope.input = $scope._input;
             $scope.rawItem = undefined;
+            modifyModelFromInside = true;
           }
         }
       }
 
       $scope.$watch('input', function (newVal, oldVal) {
         if (newVal != oldVal) {
-          angular.isFunction($scope.onchange) && $scope.onchange($scope.rawItem || $scope.input);
-          $scope._input = $scope.rawItem ? $scope.formatter($scope.rawItem) : $scope.input;
+          var returnValue = modifyModelFromInside ? ($scope.rawItem || $scope.input) : $scope.input;
+          angular.isFunction($scope.onchange) && $scope.onchange(returnValue);
+          $scope._input = modifyModelFromInside ? ($scope.rawItem ? $scope.formatter($scope.rawItem) : $scope.input) : $scope.input;
         }
+        modifyModelFromInside = false;
       });
 
       function rawReturn (item) {
