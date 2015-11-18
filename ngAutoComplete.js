@@ -26,12 +26,14 @@ angular.module('ngAutoComplete', [])
     controller: function ($scope, $filter) {
       $scope.isOneOf = false;
       $scope.formatter = angular.isFunction($scope.formatter) ? $scope.formatter : rawReturn;
-      $scope.modelToOutput = angular.isFunction($scope.modelToOutput) ? $scope.modelToOutput : false;
+      $scope.modelToOutput = angular.isFunction($scope.modelToOutput) ? $scope.modelToOutput : rawReturn;
 
       $scope.set = function (item) {
         $scope.selectedItem = item;
         $scope._input = $scope.formatter(item);
-        $scope.input = $scope.modelToOutput ? $scope.modelToOutput(item) : $scope._input;
+        $scope.input = $scope.modelToOutput(item);
+        $scope.rawItem = angular.copy(item);
+        delete $scope.rawItem['$$hashKey'];
         $scope.isOneOf = true;
         $scope.showMorePkgs = false;
       };
@@ -40,16 +42,17 @@ angular.module('ngAutoComplete', [])
         if ($scope.leaved) {
           if ($scope.cleanOnBlur && !$scope.isOneOf) {
             $scope._input = '';
-            $scope.input = undefined;
+            $scope.rawItem = $scope.input = undefined;
           } else if (!$scope.isOneOf) {
             $scope.input = $scope._input;
+            $scope.rawItem = undefined;
           }
         }
       }
 
       $scope.$watch('input', function (newVal, oldVal) {
         if (newVal != oldVal) {
-          angular.isFunction($scope.onchange) && $scope.onchange($scope.input);
+          angular.isFunction($scope.onchange) && $scope.onchange($scope.rawItem || $scope.input);
         }
       });
 
