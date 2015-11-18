@@ -53,6 +53,7 @@ angular.module('ngAutoComplete', [])
       $scope.$watch('input', function (newVal, oldVal) {
         if (newVal != oldVal) {
           angular.isFunction($scope.onchange) && $scope.onchange($scope.rawItem || $scope.input);
+          $scope._input = $scope.rawItem ? $scope.formatter($scope.rawItem) : $scope.input;
         }
       });
 
