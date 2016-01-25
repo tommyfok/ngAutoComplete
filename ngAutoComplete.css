@@ -1,10 +1,14 @@
-.nacContainer,
-.nacOuter {
+.nacContainer {
     position: relative !important;
 }
 
 .nacOuter {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
     display: none;
+    z-index: 10;
 }
 
 .nacContainer:hover .nacOuter {
@@ -12,13 +16,8 @@
 }
 
 .nacInner {
-    width: 100%;
     max-height: 250px;
     overflow: auto;
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 10;
     background: #fff;
     border: 1px solid #eee;
     border-top: none;
