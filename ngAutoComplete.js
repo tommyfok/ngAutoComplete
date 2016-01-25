@@ -4,8 +4,8 @@ angular.module('ngAutoComplete', [])
     restrict: 'AE',
     template: '<div class="nacContainer" ng-mouseleave="leaved=true" ng-mouseenter="leaved=false">'
              +'    <input placeholder="{{placeholder}}" type="{{type||\'text\'}}"'
-             +'           ng-model="_input" class="form-control" ng-focus="showMorePkgs=true" ng-blur="cleanIfEmpty()" ng-keyup="isOneOf=false">'
-             +'    <div class="nacOuter" ng-show="showMorePkgs">'
+             +'           ng-model="_input" class="form-control" ng-focus="showMore=true" ng-blur="cleanIfEmpty()" ng-keyup="isOneOf=false">'
+             +'    <div class="nacOuter" ng-show="showMore">'
              +'      <div class="nacInner">'
              +'        <div ng-repeat="item in data | filter: _input"'
              +'             ng-click="set(item)" ng-bind-html="formatter(item)"></div>'
@@ -37,7 +37,7 @@ angular.module('ngAutoComplete', [])
         $scope.rawItem = angular.copy(item);
         delete $scope.rawItem['$$hashKey'];
         $scope.isOneOf = true;
-        $scope.showMorePkgs = false;
+        $scope.showMore = false;
         modifyModelFromInside = true;
       };
 

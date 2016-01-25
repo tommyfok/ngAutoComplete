@@ -1,10 +1,14 @@
-.nacContainer:hover .nacOuter {
-    display: block;
+.nacContainer,
+.nacOuter {
+    position: relative !important;
 }
 
 .nacOuter {
-    position: relative;
     display: none;
+}
+
+.nacContainer:hover .nacOuter {
+    display: block;
 }
 
 .nacInner {
