@@ -4,7 +4,7 @@ angular.module('ngAutoComplete', [])
     restrict: 'AE',
     template: '<div class="nacContainer" ng-mouseleave="leaved=true" ng-mouseenter="leaved=false">'
              +'    <input placeholder="{{placeholder}}" type="{{type||\'text\'}}"'
-             +'           ng-model="_input" class="form-control" ng-focus="showMore=true" ng-blur="cleanIfEmpty()" ng-keyup="isOneOf=false">'
+             +'           ng-model="_input" name="{{name}}" class="form-control" ng-focus="showMore=true" ng-blur="cleanIfEmpty()" ng-keyup="isOneOf=false">'
              +'    <div class="nacOuter" ng-show="showMore">'
              +'      <div class="nacInner">'
              +'        <div ng-repeat="item in data | filter: _input"'
@@ -20,7 +20,8 @@ angular.module('ngAutoComplete', [])
       formatter: '=?nacFormatter',
       modelToOutput: '=?nacParser',
       onchange: '=?',
-      cleanOnBlur: '=?'
+      cleanOnBlur: '=?',
+      name: '@?'
     },
     require: 'ngModel',
     controller: function ($scope, $filter) {
