@@ -23,6 +23,7 @@ onchange="onchange"</pre>
                nac-formatter="fnFormatter"
                nac-parser="fnParser"
                clean-on-blur="true"
+               name="thisistheinputname"
                onchange="onchange"></div>
           <div class="btn btn-info" ng-click="inputOne='ok one'" style="margin-top:10px">修改 inputOne</div>
           <pre class="text-warning" style="margin:10px auto">
@@ -54,7 +55,7 @@ onchange="onchange"</pre>
           var STR = 'tommy is so handsome that I can\'t control myself!';
           $scope.dataOne = STR.split(' ').map(function (item) {
             return {
-              id: +new Date,
+              id: Math.random(),
               text: item
             };
           });
