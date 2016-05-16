@@ -1,8 +1,17 @@
 angular
 .module('ngAutoComplete', [])
 .filter('redKeyword', function () {
+  function escapeRegExp (str) {
+    var specials = '([' + ('\\+*.|()[]{}-').split('').join('\\') + '])';
+    var re = new RegExp(specials, 'gi');
+    return str.replace(re, '\\$1');
+  }
+
   return function (str, keyword, bool) {
-    var re = RegExp('(' + keyword + ')', 'gi');
+    if (!keyword) {
+      return str;
+    }
+    var re = RegExp('(' + escapeRegExp(keyword) + ')', 'gi');
     if (bool) {
       return re.test(str);
     } else {
@@ -13,7 +22,7 @@ angular
 .directive('ngAutoComplete', function () {
   return {
     restrict: 'AE',
-    template: '<div class="nacContainer">'
+    template: '<div class="nacContainer" ng-mouseenter="mouseover=true" ng-mouseleave="mouseover=false">'
              +'    <input name="{{name}}"'
              +'           ng-model="_input"'
              +'           class="form-control"'
@@ -27,7 +36,7 @@ angular
              +'            <div ng-click="set(item)"'
              +'                 ng-bind-html="formatter(item)|redKeyword:_input"'
              +'                 ng-class="{active:(formatter(item)|redKeyword:_input:true)}"'
-             +'                 ng-repeat="item in data|filter:(dropDown&&dropped)?\'\':_input"></div>'
+             +'                 ng-repeat="item in data|filter:(dropDown&&dropped)?\'\':_input track by $index"></div>'
              +'        </div>'
              +'    </div>'
              +'</div>',
@@ -64,29 +73,32 @@ angular
         $scope.showMore = true;
         $scope.dropped = $scope.dropDown;
         setTimeout(function () {
-          var items = elem.find('div.active');
+          var items = elem.find('div.active'), item;
           if (items.length == 1) {
-            items[0].scrollIntoView();
+            item = items[0];
+            item.parentNode.scrollTop = item.offsetTop;
           }
         }, 100);
       };
 
       $scope.onInputBlur = function () {
-        setTimeout(function () {
-          if ($scope.cleanOnBlur && !$scope.isOneOf) {
-            $scope._input = '';
-            $scope.rawItem = $scope.input = undefined;
-            modifyModelFromInside = true;
-          } else if (!$scope.isOneOf) {
-            $scope.input = $scope._input;
-            $scope.rawItem = undefined;
-            modifyModelFromInside = true;
-          }
-          $scope.showMore = false;
-          try {
-            $scope.$digest();
-          } catch (e) {}
-        }, 100);
+        if (!$scope.mouseover) {
+          setTimeout(function () {
+            if ($scope.cleanOnBlur && !$scope.isOneOf) {
+              $scope._input = '';
+              $scope.rawItem = $scope.input = undefined;
+              modifyModelFromInside = true;
+            } else if (!$scope.isOneOf) {
+              $scope.input = $scope._input;
+              $scope.rawItem = undefined;
+              modifyModelFromInside = true;
+            }
+            $scope.showMore = false;
+            try {
+              $scope.$digest();
+            } catch (e) {}
+          }, 100);
+        }
       };
     },
     controller: function ($scope, $filter, $timeout) {
