@@ -10,34 +10,30 @@
       <div class="row">
         <div class="col-md-12">
           <pre class="text-info" style="margin:10px auto">
-clean-on-blur="true"
-ng-model="inputOne"
 nac-data="dataOne"
-nac-formatter="fnFormatter"
+onchange="onchange"
+ng-model="inputOne"
 nac-parser="fnParser"
-clean-on-blur="true"
-onchange="onchange"</pre>
+name="thisistheinputname"
+nac-formatter="fnFormatter"</pre>
           <div ng-auto-complete
-               ng-model="inputOne"
                nac-data="dataOne"
-               nac-formatter="fnFormatter"
+               onchange="onchange"
+               ng-model="inputOne"
                nac-parser="fnParser"
-               clean-on-blur="true"
                name="thisistheinputname"
-               onchange="onchange"></div>
+               nac-formatter="fnFormatter"></div>
           <div class="btn btn-info" ng-click="inputOne='ok one'" style="margin-top:10px">修改 inputOne</div>
           <pre class="text-warning" style="margin:10px auto">
-clean-on-blur="false"
-ng-model="inputOne"
-nac-data="dataOne"
-nac-formatter="fnFormatter"
-nac-parser="fnParser"
-clean-on-blur="true"
-onchange="onchange"</pre>
+nac-data="dataTwo"
+ng-model="inputTwo"
+onchange="onchange"
+clean-on-blur="true"</pre>
           <div ng-auto-complete
-               ng-model="inputTwo"
                nac-data="dataTwo"
-               onchange="onchange"></div>
+               ng-model="inputTwo"
+               onchange="onchange"
+               clean-on-blur="true"></div>
           <div class="btn btn-warning" ng-click="inputTwo='ok for input two'" style="margin-top:10px">修改 inputTwo</div>
         </div>
       </div>

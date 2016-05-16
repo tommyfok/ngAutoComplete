@@ -1,35 +1,101 @@
-angular.module('ngAutoComplete', [])
+angular
+.module('ngAutoComplete', [])
+.filter('redKeyword', function () {
+  return function (str, keyword, bool) {
+    var re = RegExp('(' + keyword + ')', 'gi');
+    if (bool) {
+      return re.test(str);
+    } else {
+      return keyword ? str.replace(re, '<span style="color:#f60">$1</span>') : str;
+    }
+  };
+})
 .directive('ngAutoComplete', function () {
   return {
     restrict: 'AE',
-    template: '<div class="nacContainer" ng-mouseleave="leaved=true" ng-mouseenter="leaved=false">'
-             +'    <input placeholder="{{placeholder}}" type="{{type||\'text\'}}"'
-             +'           ng-model="_input" name="{{name}}" class="form-control" ng-focus="showMore=true" ng-blur="cleanIfEmpty()" ng-keyup="isOneOf=false">'
+    template: '<div class="nacContainer">'
+             +'    <input name="{{name}}"'
+             +'           ng-model="_input"'
+             +'           class="form-control"'
+             +'           ng-focus="onInputFocus()"'
+             +'           ng-blur="onInputBlur()"'
+             +'           type="{{type||\'text\'}}"'
+             +'           placeholder="{{placeholder}}"'
+             +'           ng-keyup="onInputKeyUp($event)">'
              +'    <div class="nacOuter" ng-show="showMore">'
-             +'      <div class="nacInner">'
-             +'        <div ng-repeat="item in data | filter: _input"'
-             +'             ng-click="set(item)" ng-bind-html="formatter(item)"></div>'
-             +'      </div>'
+             +'        <div class="nacInner">'
+             +'            <div ng-click="set(item)"'
+             +'                 ng-bind-html="formatter(item)|redKeyword:_input"'
+             +'                 ng-class="{active:(formatter(item)|redKeyword:_input:true)}"'
+             +'                 ng-repeat="item in data|filter:(dropDown&&dropped)?\'\':_input"></div>'
+             +'        </div>'
              +'    </div>'
              +'</div>',
     scope: {
-      input: '=ngModel',
-      data: '=nacData',
+      name: '@?',
       type: '@type',
+      onchange: '=?',
+      data: '=nacData',
+      input: '=ngModel',
+      cleanOnBlur: '=?',
+      dropDown: '=?nacDropdown',
       placeholder: '@placeholder',
       formatter: '=?nacFormatter',
-      modelToOutput: '=?nacParser',
-      onchange: '=?',
-      cleanOnBlur: '=?',
-      name: '@?'
+      modelToOutput: '=?nacParser'
     },
     require: 'ngModel',
-    controller: function ($scope, $filter) {
+    link: function ($scope, elem) {
+      var elem = $(elem[0]);
+
+      $scope.onInputKeyUp = function (e) {
+        e.preventDefault();
+        if (e.keyCode == 13 && elem.find('div.active').length == 1) {
+          var items = $scope.getSelectedItems();
+          if (items.length == 1) {
+            $scope.set(items[0]);
+          }
+        } else {
+          $scope.isOneOf = false;
+        }
+        $scope.dropped = false;
+      };
+
+      $scope.onInputFocus = function () {
+        $scope.showMore = true;
+        $scope.dropped = $scope.dropDown;
+        setTimeout(function () {
+          var items = elem.find('div.active');
+          if (items.length == 1) {
+            items[0].scrollIntoView();
+          }
+        }, 100);
+      };
+
+      $scope.onInputBlur = function () {
+        setTimeout(function () {
+          if ($scope.cleanOnBlur && !$scope.isOneOf) {
+            $scope._input = '';
+            $scope.rawItem = $scope.input = undefined;
+            modifyModelFromInside = true;
+          } else if (!$scope.isOneOf) {
+            $scope.input = $scope._input;
+            $scope.rawItem = undefined;
+            modifyModelFromInside = true;
+          }
+          $scope.showMore = false;
+          try {
+            $scope.$digest();
+          } catch (e) {}
+        }, 100);
+      };
+    },
+    controller: function ($scope, $filter, $timeout) {
+      var modifyModelFromInside;
+
+      $scope.dropDown = (typeof $scope.dropDown === 'boolean') ? $scope.dropDown : true;
       $scope.isOneOf = false;
       $scope.formatter = angular.isFunction($scope.formatter) ? $scope.formatter : rawReturn;
       $scope.modelToOutput = angular.isFunction($scope.modelToOutput) ? $scope.modelToOutput : rawReturn;
-
-      var modifyModelFromInside;
 
       $scope.set = function (item) {
         $scope.selectedItem = item;
@@ -42,20 +108,6 @@ angular.module('ngAutoComplete', [])
         modifyModelFromInside = true;
       };
 
-      $scope.cleanIfEmpty = function () {
-        if ($scope.leaved) {
-          if ($scope.cleanOnBlur && !$scope.isOneOf) {
-            $scope._input = '';
-            $scope.rawItem = $scope.input = undefined;
-            modifyModelFromInside = true;
-          } else if (!$scope.isOneOf) {
-            $scope.input = $scope._input;
-            $scope.rawItem = undefined;
-            modifyModelFromInside = true;
-          }
-        }
-      }
-
       $scope.$watch('input', function (newVal, oldVal) {
         if (newVal != oldVal) {
           var returnValue = modifyModelFromInside ? ($scope.rawItem || $scope.input) : $scope.input;
@@ -64,6 +116,10 @@ angular.module('ngAutoComplete', [])
         }
         modifyModelFromInside = false;
       });
+
+      $scope.getSelectedItems = function () {
+        return $filter('filter')($scope.data, $scope._input);
+      };
 
       function rawReturn (item) {
         return item;
