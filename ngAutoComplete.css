@@ -38,17 +38,18 @@
     width: 0;
     height: 0;
     border: 6px solid transparent;
-    border-left-width: 4.5px;
-    border-right-width: 4.5px;
+    border-left-width: 3.8px;
+    border-right-width: 3.8px;
     border-top-color: #666;
     position: absolute;
-    right: 9px;
+    right: 7.5px;
     top: 15px;
     -webkit-transition: all .5s ease-out;
     -webkit-transform-origin: 50% 25%;
+    -webkit-transform: translate3d(0,-3px,0) rotate(0);
 }
 
 .nacContainer .icon-dropdown.up {
     border-top-color: #ccc;
-    -webkit-transform: rotate(180deg);
+    -webkit-transform: translate3d(0,-3px,0) rotate(180deg);
 }
