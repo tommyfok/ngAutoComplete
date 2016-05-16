@@ -22,7 +22,7 @@ angular
 .directive('ngAutoComplete', function () {
   return {
     restrict: 'AE',
-    template: '<div class="nacContainer" ng-mouseenter="mouseover=true" ng-mouseleave="mouseover=false">'
+    template: '<div class="nacContainer" ng-mouseenter="mouseover=true" ng-mouseleave="onMouseLeave()">'
              +'    <input name="{{name}}"'
              +'           ng-model="_input"'
              +'           class="form-control"'
@@ -56,6 +56,13 @@ angular
     link: function ($scope, elem) {
       var elem = $(elem[0]);
 
+      $scope.onMouseLeave = function () {
+        if ($scope.inputBlured) {
+          $scope.showMore = false;
+        }
+        $scope.mouseover = false;
+      };
+
       $scope.onInputKeyUp = function (e) {
         e.preventDefault();
         if (e.keyCode == 13 && elem.find('div.active').length == 1) {
@@ -70,6 +77,7 @@ angular
       };
 
       $scope.onInputFocus = function () {
+        $scope.inputBlured = false;
         $scope.showMore = true;
         $scope.dropped = $scope.dropDown;
         setTimeout(function () {
@@ -82,6 +90,7 @@ angular
       };
 
       $scope.onInputBlur = function () {
+        $scope.inputBlured = true;
         if (!$scope.mouseover) {
           setTimeout(function () {
             if ($scope.cleanOnBlur && !$scope.isOneOf) {
