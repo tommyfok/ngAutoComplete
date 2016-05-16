@@ -29,3 +29,26 @@
     background: #fafafa;
     color: #f60;
 }
+
+.nacContainer .cp {
+    cursor: pointer;
+}
+
+.nacContainer .icon-dropdown {
+    width: 0;
+    height: 0;
+    border: 6px solid transparent;
+    border-left-width: 4.5px;
+    border-right-width: 4.5px;
+    border-top-color: #666;
+    position: absolute;
+    right: 9px;
+    top: 15px;
+    -webkit-transition: all .5s ease-out;
+    -webkit-transform-origin: 50% 25%;
+}
+
+.nacContainer .icon-dropdown.up {
+    border-top-color: #ccc;
+    -webkit-transform: rotate(180deg);
+}

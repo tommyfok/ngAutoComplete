@@ -26,11 +26,13 @@ angular
              +'    <input name="{{name}}"'
              +'           ng-model="_input"'
              +'           class="form-control"'
-             +'           ng-focus="onInputFocus()"'
              +'           ng-blur="onInputBlur()"'
+             +'           ng-focus="onInputFocus()"'
              +'           type="{{type||\'text\'}}"'
+             +'           ng-class="{cp:inputBlured}"'
              +'           placeholder="{{placeholder}}"'
              +'           ng-keyup="onInputKeyUp($event)">'
+             +'    <div class="icon-dropdown" ng-class="{up:showMore}"></div>'
              +'    <div class="nacOuter" ng-show="showMore">'
              +'        <div class="nacInner">'
              +'            <div ng-click="set(item)"'
@@ -117,6 +119,7 @@ angular
       $scope.isOneOf = false;
       $scope.formatter = angular.isFunction($scope.formatter) ? $scope.formatter : rawReturn;
       $scope.modelToOutput = angular.isFunction($scope.modelToOutput) ? $scope.modelToOutput : rawReturn;
+      $scope.inputBlured = true;
 
       $scope.set = function (item) {
         $scope.selectedItem = item;
