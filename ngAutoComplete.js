@@ -118,34 +118,74 @@ angular
     },
     controller: function ($scope, $filter, $timeout) {
       var modifyModelFromInside;
+      var formatterParserErr = {count:0};
+      var inputChangeErr = {count:0};
 
       $scope.dropDown = (typeof $scope.dropDown === 'boolean') ? $scope.dropDown : true;
       $scope.isOneOf = false;
-      $scope.formatter = angular.isFunction($scope.formatter) ? $scope.formatter : rawReturn;
-      $scope.modelToOutput = angular.isFunction($scope.modelToOutput) ? $scope.modelToOutput : rawReturn;
+      try {
+        $scope.formatter = angular.isFunction($scope.formatter) ? $scope.formatter : rawReturn;
+        $scope.modelToOutput = angular.isFunction($scope.modelToOutput) ? $scope.modelToOutput : rawReturn;
+      } catch (e) {
+        formatterParserErr.count++;
+        console.log(e);
+      }
       $scope.inputBlured = true;
 
       $scope.set = function (item) {
+        if (formatterParserErr.count > 10) {
+          console.log('err count greater 10, retry 3s later.');
+          if (!formatterParserErr.timer) {
+            formatterParserErr.timer = setTimeout(function () {
+              formatterParserErr.count = 0;
+              clearTimeout(formatterParserErr.timer);
+            }, 3000);
+          }
+          return;
+        }
         $scope.selectedItem = item;
-        $scope._input = $scope.formatter(item);
-        $scope.input = $scope.modelToOutput(item);
+        try {
+          $scope._input = $scope.formatter(item);
+          $scope.input = $scope.modelToOutput(item);
+        } catch (e) {
+          formatterParserErr.count++;
+          console.log(e);
+        }
         $scope.rawItem = angular.copy(item);
-        // delete $scope.rawItem['$$hashKey'];
         $scope.isOneOf = true;
         $scope.showMore = false;
         modifyModelFromInside = true;
       };
 
       $scope.$watch('input', function (newVal, oldVal) {
-        if (newVal != oldVal) {
-          var returnValue = modifyModelFromInside ? ($scope.rawItem || $scope.input) : $scope.input;
-          angular.isFunction($scope.onchange) && $scope.onchange(returnValue);
-          $scope._input = modifyModelFromInside ? ($scope.rawItem ? $scope.formatter($scope.rawItem) : $scope.input) : $scope.input;
-          if (!modifyModelFromInside) {
-            $scope.set($scope.input);
+        if (inputChangeErr.count > 10) {
+          console.log('err count greater 10, retry 3s later.');
+          if (!inputChangeErr.timer) {
+            inputChangeErr.timer = setTimeout(function () {
+              inputChangeErr.count = 0;
+              clearTimeout(inputChangeErr.timer);
+            }, 3000);
           }
+          return;
         }
-        modifyModelFromInside = false;
+        try {
+          if (newVal != oldVal) {
+            var returnValue = modifyModelFromInside ? ($scope.rawItem || $scope.input) : $scope.input;
+            angular.isFunction($scope.onchange) && $scope.onchange(returnValue);
+            $scope._input = modifyModelFromInside ? ($scope.rawItem ? $scope.formatter($scope.rawItem) : $scope.input) : $scope.input;
+            if (!modifyModelFromInside) {
+              $scope.set($scope.input);
+              modifyModelFromInside = true;
+            } else {
+              modifyModelFromInside = false;
+            }
+          } else {
+            modifyModelFromInside = false;
+          }
+        } catch (e) {
+          inputChangeErr.count++;
+          console.log(e);
+        }
       });
 
       $scope.getSelectedItems = function () {

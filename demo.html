@@ -21,8 +21,9 @@ nac-formatter="fnFormatter"</pre>
                onchange="onchange"
                ng-model="inputOne"
                clean-on-blur="false"
+               nac-parser="fnParser"
                name="thisistheinputname"
-               nac-formatter="fnFormatter"></div>
+               nac-formatter="fnFormatter"></div>{{inputOne}}
           <div class="btn btn-info" ng-click="inputOne='ok one'" style="margin-top:10px">修改 inputOne</div>
           <pre class="text-warning" style="margin:10px auto">
 nac-data="dataTwo"
@@ -57,6 +58,7 @@ clean-on-blur="true"</pre>
           });
           $scope.dataTwo = STR.split(' ');
           $scope.onchange = function (item) {
+            console.log(tryErrorHeheda);
             console.log(item);
           };
           $scope.fnFormatter = function (item) {
