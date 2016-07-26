@@ -2,9 +2,13 @@ angular
 .module('ngAutoComplete', [])
 .filter('redKeyword', function () {
   function escapeRegExp (str) {
-    var specials = '([' + ('\\+*.|()[]{}-').split('').join('\\') + '])';
-    var re = new RegExp(specials, 'gi');
-    return str.replace(re, '\\$1');
+    if (typeof str === 'string') {
+      var specials = '([' + ('\\+*.|()[]{}-').split('').join('\\') + '])';
+      var re = new RegExp(specials, 'gi');
+      return str.replace(re, '\\$1');
+    } else {
+      return str;
+    }
   }
 
   return function (str, keyword, bool) {
@@ -126,7 +130,7 @@ angular
         $scope._input = $scope.formatter(item);
         $scope.input = $scope.modelToOutput(item);
         $scope.rawItem = angular.copy(item);
-        delete $scope.rawItem['$$hashKey'];
+        // delete $scope.rawItem['$$hashKey'];
         $scope.isOneOf = true;
         $scope.showMore = false;
         modifyModelFromInside = true;
@@ -137,6 +141,9 @@ angular
           var returnValue = modifyModelFromInside ? ($scope.rawItem || $scope.input) : $scope.input;
           angular.isFunction($scope.onchange) && $scope.onchange(returnValue);
           $scope._input = modifyModelFromInside ? ($scope.rawItem ? $scope.formatter($scope.rawItem) : $scope.input) : $scope.input;
+          if (!modifyModelFromInside) {
+            $scope.set($scope.input);
+          }
         }
         modifyModelFromInside = false;
       });

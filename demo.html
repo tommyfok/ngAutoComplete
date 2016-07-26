@@ -20,7 +20,7 @@ nac-formatter="fnFormatter"</pre>
                nac-data="dataOne"
                onchange="onchange"
                ng-model="inputOne"
-               nac-parser="fnParser"
+               clean-on-blur="false"
                name="thisistheinputname"
                nac-formatter="fnFormatter"></div>
           <div class="btn btn-info" ng-click="inputOne='ok one'" style="margin-top:10px">修改 inputOne</div>
@@ -65,6 +65,9 @@ clean-on-blur="true"</pre>
           $scope.fnParser = function (item) {
             return item.id * 2;
           };
+          $timeout(function () {
+            $scope.inputOne = {"id":0.35426890849364967,"text":"so"};
+          }, 2000);
         });
     </script>
 </body>
