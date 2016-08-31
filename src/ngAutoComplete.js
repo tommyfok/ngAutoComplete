@@ -1,3 +1,7 @@
+import './ngAutoComplete.less';
+
+var modifyModelFromInside;
+
 angular
 .module('ngAutoComplete', [])
 .filter('redKeyword', function () {
@@ -26,26 +30,7 @@ angular
 .directive('ngAutoComplete', function () {
   return {
     restrict: 'AE',
-    template: '<div class="nacContainer" ng-mouseenter="mouseover=true" ng-mouseleave="onMouseLeave()">'
-             +'    <input name="{{name}}"'
-             +'           ng-model="_input"'
-             +'           class="form-control"'
-             +'           ng-blur="onInputBlur()"'
-             +'           ng-focus="onInputFocus()"'
-             +'           type="{{type||\'text\'}}"'
-             +'           ng-class="{cp:inputBlured}"'
-             +'           placeholder="{{placeholder}}"'
-             +'           ng-keyup="onInputKeyUp($event)">'
-             +'    <div class="icon-dropdown" ng-class="{up:showMore}"></div>'
-             +'    <div class="nacOuter" ng-show="showMore">'
-             +'        <div class="nacInner">'
-             +'            <div ng-click="set(item)"'
-             +'                 ng-bind-html="formatter(item)|redKeyword:_input"'
-             +'                 ng-class="{active:(formatter(item)|redKeyword:_input:true)}"'
-             +'                 ng-repeat="item in data|filter:(dropDown&&dropped)?\'\':_input track by $index"></div>'
-             +'        </div>'
-             +'    </div>'
-             +'</div>',
+    template: require('./ngAutoComplete.html'),
     scope: {
       name: '@?',
       type: '@type',
@@ -117,7 +102,6 @@ angular
       };
     },
     controller: function ($scope, $filter, $timeout) {
-      var modifyModelFromInside;
       var formatterParserErr = {count:0};
       var inputChangeErr = {count:0};
 

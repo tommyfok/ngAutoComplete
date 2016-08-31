@@ -1,0 +1,55 @@
+.nacContainer {
+    position: relative !important;
+    transition: all .3s ease-out;
+
+    .cp {
+        cursor: pointer;
+    }
+
+    .icon-dropdown {
+        width: 0;
+        height: 0;
+        border: 6px solid transparent;
+        border-left-width: 3.8px;
+        border-right-width: 3.8px;
+        border-top-color: #666;
+        position: absolute;
+        right: 7.5px;
+        top: 50%;
+        transition: all .5s ease-out;
+        transform-origin: 50% 25%;
+        transform: translate3d(0, -3px, 0) rotate(0);
+
+        &.up {
+            border-top-color: #ccc;
+            transform: translate3d(0, -3px, 0) rotate(180deg);
+        }
+    }
+}
+
+.nacOuter {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    display: block;
+    z-index: 10;
+}
+
+.nacInner {
+    max-height: 250px;
+    overflow: auto;
+    background: #fff;
+    border: 1px solid #eee;
+    border-top: none;
+    box-shadow: 0 0 5px rgba(0, 0, 0, .1);
+}
+
+.nacInner > div {
+    padding: 10px;
+    cursor: pointer;
+    &:hover {
+        background: #fafafa;
+        color: #f60;
+    }
+}

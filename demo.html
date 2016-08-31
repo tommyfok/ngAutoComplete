@@ -3,7 +3,6 @@
 <head>
   <title>ngAutoComplete DEMO page.</title>
   <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
-  <link href="ngAutoComplete.css" rel="stylesheet">
 </head>
 <body>
     <div class="container">
@@ -42,7 +41,7 @@ clean-on-blur="true"</pre>
     <script src="//cdn.bootcss.com/angular.js/1.4.7/angular.min.js"></script>
     <script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
     <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script src="ngAutoComplete.js"></script>
+    <script src="build/ngAutoComplete.js"></script>
     <script>
         angular.module('MyApp', ['ngAutoComplete'])
         .config(function ($sceProvider) {
@@ -58,7 +57,6 @@ clean-on-blur="true"</pre>
           });
           $scope.dataTwo = STR.split(' ');
           $scope.onchange = function (item) {
-            console.log(tryErrorHeheda);
             console.log(item);
           };
           $scope.fnFormatter = function (item) {
