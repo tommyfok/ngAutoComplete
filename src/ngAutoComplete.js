@@ -1,184 +1,248 @@
 import './ngAutoComplete.less';
 
-var modifyModelFromInside;
-
 angular
 .module('ngAutoComplete', [])
 .filter('redKeyword', function () {
-  function escapeRegExp (str) {
-    if (typeof str === 'string') {
-      var specials = '([' + ('\\+*.|()[]{}-').split('').join('\\') + '])';
-      var re = new RegExp(specials, 'gi');
-      return str.replace(re, '\\$1');
-    } else {
-      return str;
-    }
-  }
-
-  return function (str, keyword, bool) {
-    if (!keyword) {
-      return str;
-    }
-    var re = RegExp('(' + escapeRegExp(keyword) + ')', 'gi');
-    if (bool) {
-      return re.test(str);
-    } else {
-      return keyword ? str.replace(re, '<span style="color:#f60">$1</span>') : str;
-    }
-  };
-})
-.directive('ngAutoComplete', function () {
-  return {
-    restrict: 'AE',
-    template: require('./ngAutoComplete.html'),
-    scope: {
-      name: '@?',
-      type: '@type',
-      onchange: '=?',
-      data: '=nacData',
-      input: '=ngModel',
-      cleanOnBlur: '=?',
-      dropDown: '=?nacDropdown',
-      placeholder: '@placeholder',
-      formatter: '=?nacFormatter',
-      modelToOutput: '=?nacParser'
-    },
-    require: 'ngModel',
-    link: function ($scope, elem) {
-      var elem = $(elem[0]);
-
-      $scope.onMouseLeave = function () {
-        if ($scope.inputBlured) {
-          $scope.showMore = false;
-        }
-        $scope.mouseover = false;
-      };
-
-      $scope.onInputKeyUp = function (e) {
-        e.preventDefault();
-        if (e.keyCode == 13 && elem.find('div.active').length == 1) {
-          var items = $scope.getSelectedItems();
-          if (items.length == 1) {
-            $scope.set(items[0]);
-          }
+    function escapeRegExp(str) {
+        if (typeof str === 'string') {
+            var specials = '([' + ('\\+*.|()[]{}-').split('').join('\\') + '])';
+            var re = new RegExp(specials, 'gi');
+            return str.replace(re, '\\$1');
         } else {
-          $scope.isOneOf = false;
+            return str;
         }
-        $scope.dropped = false;
-      };
-
-      $scope.onInputFocus = function () {
-        $scope.inputBlured = false;
-        $scope.showMore = true;
-        $scope.dropped = $scope.dropDown;
-        setTimeout(function () {
-          var items = elem.find('div.active'), item;
-          if (items.length == 1) {
-            item = items[0];
-            item.parentNode.scrollTop = item.offsetTop;
-          }
-        }, 100);
-      };
-
-      $scope.onInputBlur = function () {
-        $scope.inputBlured = true;
-        if (!$scope.mouseover) {
-          setTimeout(function () {
-            if ($scope.cleanOnBlur && !$scope.isOneOf) {
-              $scope._input = '';
-              $scope.rawItem = $scope.input = undefined;
-              modifyModelFromInside = true;
-            } else if (!$scope.isOneOf) {
-              $scope.input = $scope._input;
-              $scope.rawItem = undefined;
-              modifyModelFromInside = true;
-            }
-            $scope.showMore = false;
-            try {
-              $scope.$digest();
-            } catch (e) {}
-          }, 100);
-        }
-      };
-    },
-    controller: function ($scope, $filter, $timeout) {
-      var formatterParserErr = {count:0};
-      var inputChangeErr = {count:0};
-
-      $scope.dropDown = (typeof $scope.dropDown === 'boolean') ? $scope.dropDown : true;
-      $scope.isOneOf = false;
-      try {
-        $scope.formatter = angular.isFunction($scope.formatter) ? $scope.formatter : rawReturn;
-        $scope.modelToOutput = angular.isFunction($scope.modelToOutput) ? $scope.modelToOutput : rawReturn;
-      } catch (e) {
-        formatterParserErr.count++;
-        console.log(e);
-      }
-      $scope.inputBlured = true;
-
-      $scope.set = function (item) {
-        if (formatterParserErr.count > 10) {
-          console.log('err count greater 10, retry 3s later.');
-          if (!formatterParserErr.timer) {
-            formatterParserErr.timer = setTimeout(function () {
-              formatterParserErr.count = 0;
-              clearTimeout(formatterParserErr.timer);
-            }, 3000);
-          }
-          return;
-        }
-        $scope.selectedItem = item;
-        try {
-          $scope._input = $scope.formatter(item);
-          $scope.input = $scope.modelToOutput(item);
-        } catch (e) {
-          formatterParserErr.count++;
-          console.log(e);
-        }
-        $scope.rawItem = angular.copy(item);
-        $scope.isOneOf = true;
-        $scope.showMore = false;
-        modifyModelFromInside = true;
-      };
-
-      $scope.$watch('input', function (newVal, oldVal) {
-        if (inputChangeErr.count > 10) {
-          console.log('err count greater 10, retry 3s later.');
-          if (!inputChangeErr.timer) {
-            inputChangeErr.timer = setTimeout(function () {
-              inputChangeErr.count = 0;
-              clearTimeout(inputChangeErr.timer);
-            }, 3000);
-          }
-          return;
-        }
-        try {
-          if (newVal != oldVal) {
-            var returnValue = modifyModelFromInside ? ($scope.rawItem || $scope.input) : $scope.input;
-            angular.isFunction($scope.onchange) && $scope.onchange(returnValue);
-            $scope._input = modifyModelFromInside ? ($scope.rawItem ? $scope.formatter($scope.rawItem) : $scope.input) : $scope.input;
-            if (!modifyModelFromInside) {
-              $scope.set($scope.input);
-              modifyModelFromInside = true;
-            } else {
-              modifyModelFromInside = false;
-            }
-          } else {
-            modifyModelFromInside = false;
-          }
-        } catch (e) {
-          inputChangeErr.count++;
-          console.log(e);
-        }
-      });
-
-      $scope.getSelectedItems = function () {
-        return $filter('filter')($scope.data, $scope._input);
-      };
-
-      function rawReturn (item) {
-        return item;
-      }
     }
-  };
-});
+
+    return function (str, keyword, bool) {
+        if (!keyword) {
+            return str;
+        }
+
+        var re = RegExp('(' + escapeRegExp(keyword) + ')', 'gi');
+        if (bool) {
+            return re.test(str);
+        } else {
+            return keyword ? (str ? str.replace(re, '<span style="color:#d40">$1</span>') : str) : str;
+        }
+    };
+})
+.directive('ngAutoComplete', ['$filter', '$timeout', function ($filter, $timeout) {
+    return {
+        restrict: 'AE',
+        template: require('./ngAutoComplete.html'),
+        scope: {
+            name: '@?',
+            type: '@type',
+            onchange: '=?',
+            data: '=nacData',
+            input: '=ngModel',
+            cleanOnBlur: '=?',
+            placeholder: '@placeholder',
+            formatter: '=?nacFormatter',
+            parser: '=?nacParser'
+        },
+        require: 'ngModel',
+        link: function ($scope, $elem, $attrs) {
+            // 变量
+            var currentItem;
+            var el              = $($elem);
+            var inputElem       = el.find('input');
+            var dorpdownElem    = el.find('.nacOuter');
+            var isOverComponent = false;
+            var isBlur          = true;
+            var isDirty         = false;
+            var blurWithCommit  = true;
+
+            // 数据
+            $scope.filteredList = $scope.data;
+
+            // 公开方法和属性
+            $scope.formatter = $scope.formatter || _rawOutput;
+            $scope.parser    = $scope.parser || _rawOutput;
+            $scope.set       = _setItem;
+
+            // 事件侦听
+            $scope.onfocus          = _onfocus;
+            $scope.onblur           = _onblur;
+            $scope.onkeydown        = _onkeydown;
+            $scope.onentercomponent = _onentercomponent;
+            $scope.onleavecomponent = _onleavecomponent;
+
+            // 变量侦听
+            $scope.$watch('domInput', _updateFilterList);
+            $scope.$watch('input', _oninputchange, true);
+            $scope.$watch('data', _oninputchange, true);
+
+            // 私有函数
+            function _setItem (item) {
+                if (item) {
+                    // 设置一个item
+                    currentItem = item;
+                    $scope.domInput = $scope.formatter(item);
+                    $scope.input = $scope.parser(item);
+                    blurWithCommit = false;
+                    inputElem.trigger('blur');
+                } else {
+                    $scope.domInput = '';
+                    $scope.input = undefined;
+                }
+
+                $scope.showMore = false;
+            }
+
+            function _clearItem () {
+                _setItem();
+            }
+
+            function _rawOutput (item) {
+                return item;
+            }
+
+            function _onfocus () {
+                var items, itemIndex;
+                isDirty = false;
+                isBlur = false;
+                $scope.filteredList = $scope.data;
+                $scope.showMore = true;
+
+                if (currentItem) {
+                    setTimeout(function () {
+                        items = el.find('.nacInner > div').removeClass('active');
+                        itemIndex = $scope.filteredList.indexOf(currentItem);
+                        items.eq(itemIndex).addClass('active');
+                        _centerActiveItem();
+                    });
+                }
+            }
+
+            function _onblur () {
+                isBlur = true;
+                if (!isOverComponent) {
+                    $scope.showMore = false;
+                    if (blurWithCommit) {
+                        _defaultCommit();
+                    } else {
+                        blurWithCommit = true;
+                    }
+                }
+            }
+
+            function _onkeydown (e) {
+                var container = el.find('.nacInner');
+                var items = el.find('.nacInner > div');
+                var hoverItem = el.find('.nacInner > div.active');
+                if (e.keyCode === 13) {
+                    if (hoverItem[0]) {
+                        _setItem($scope.filteredList[hoverItem.index()]);
+                    } else {
+                        _defaultCommit();
+                    }
+                } else {
+                    if ($scope.filteredList.length > 1) {
+                        if (e.keyCode === 38) {
+                            // up
+                            if (hoverItem[0]) {
+                                hoverItem.removeClass('active');
+                                if (hoverItem.prev()[0]) {
+                                    hoverItem.prev().addClass('active');
+                                } else {
+                                    items.last().addClass('active');
+                                }
+                            } else {
+                                items.last().addClass('active');
+                            }
+                        } else if (e.keyCode === 40) {
+                            // down
+                            if (hoverItem[0]) {
+                                hoverItem.removeClass('active');
+                                if (hoverItem.next()[0]) {
+                                    hoverItem.next().addClass('active');
+                                } else {
+                                    items.first().addClass('active');
+                                }
+                            } else {
+                                items.first().addClass('active');
+                            }
+                        }
+                        _centerActiveItem();
+                    } else {
+                        items.removeClass('active');
+                    }
+                    $scope.showMore = true;
+                }
+            }
+
+            function _onentercomponent () {
+                isOverComponent = true;
+                if (!isBlur) {
+                    $scope.showMore = true;
+                }
+            }
+
+            function _onleavecomponent () {
+                isOverComponent = false;
+                if (isBlur) {
+                    $scope.showMore = false;
+                }
+            }
+
+            function _updateFilterList () {
+                isDirty = true;
+                $scope.filteredList = $filter('filter')($scope.data, $scope.domInput);
+                $timeout(function () {
+                    el.find('.nacInner > div').removeClass('active');
+                });
+            }
+
+            function _defaultCommit () {
+                if (isDirty) {
+                    if ($scope.cleanOnBlur) {
+                        if ($scope.filteredList.length === 1) {
+                            _setItem($scope.filteredList[0]);
+                        } else {
+                            _clearItem();
+                            currentItem = undefined;
+                        }
+                    } else {
+                        $scope.showMore = false;
+                        $scope.input = $scope.domInput;
+                        currentItem = undefined;
+                    }
+                }
+
+                blurWithCommit = true;
+                inputElem.trigger('blur');
+            }
+
+            function _oninputchange () {
+                currentItem = undefined;
+                var matchList = _getMatchItems();
+                if (matchList.length === 1) {
+                    _setItem(matchList[0]);
+                } else {
+                    $scope.domInput = $scope.input;
+                }
+            }
+
+            function _getMatchItems () {
+                var matchList = [];
+                $scope.data.forEach(function (item) {
+                    if ($scope.parser(item) == $scope.input) {
+                        matchList.push(item);
+                    }
+                });
+                return matchList;
+            }
+
+            function _centerActiveItem (index) {
+                var container = el.find('.nacInner');
+                var activeItems = typeof index === 'number' ? el.find('.nacInner > div').eq(index) : el.find('.nacInner > div.active');
+                if (activeItems.length === 1) {
+                    container.stop().animate({
+                        scrollTop: activeItems[0].offsetTop - (el.find('.nacOuter').height() - activeItems[0].getBoundingClientRect().height) / 2
+                    }, 200);
+                }
+            }
+        }
+    };
+}]);

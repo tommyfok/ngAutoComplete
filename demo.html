@@ -1,73 +1,97 @@
 <!DOCTYPE html>
 <html ng-app="MyApp" ng-controller="GlobalController as g">
 <head>
-  <title>ngAutoComplete DEMO page.</title>
-  <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <title>ngAutoComplete DEMO page.</title>
+    <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <pre class="text-info" style="margin:10px auto">
+        <div class="row">
+            <div class="col-md-12">
+                <pre class="text-info" style="margin:10px auto">
 nac-data="dataOne"
 onchange="onchange"
 ng-model="inputOne"
 nac-parser="fnParser"
 name="thisistheinputname"
 nac-formatter="fnFormatter"</pre>
-          <div ng-auto-complete
-               nac-data="dataOne"
-               onchange="onchange"
-               ng-model="inputOne"
-               clean-on-blur="false"
-               nac-parser="fnParser"
-               name="thisistheinputname"
-               nac-formatter="fnFormatter"></div>{{inputOne}}
-          <div class="btn btn-info" ng-click="inputOne='ok one'" style="margin-top:10px">修改 inputOne</div>
-          <pre class="text-warning" style="margin:10px auto">
+                <div ng-auto-complete
+                     nac-data="dataOne"
+                     onchange="onchange"
+                     ng-model="inputOne"
+                     clean-on-blur="false"
+                     nac-parser="fnParser"
+                     name="thisistheinputname"
+                     nac-formatter="fnFormatter"></div>
+                <div class="btn btn-info"
+                     ng-click="inputOne='ok one'"
+                     style="margin-top:10px">修改 inputOne</div>
+                inputOne:{{inputOne|json}}
+                <pre class="text-warning" style="margin:10px auto">
 nac-data="dataTwo"
 ng-model="inputTwo"
 onchange="onchange"
 clean-on-blur="true"</pre>
-          <div ng-auto-complete
-               nac-data="dataTwo"
-               ng-model="inputTwo"
-               onchange="onchange"
-               clean-on-blur="true"></div>
-          <div class="btn btn-warning" ng-click="inputTwo='ok for input two'" style="margin-top:10px">修改 inputTwo</div>
+                <div ng-auto-complete
+                     nac-data="dataTwo"
+                     ng-model="inputTwo"
+                     onchange="onchange"
+                     clean-on-blur="true"></div>
+                <div class="btn btn-warning" ng-click="inputTwo='ok for input two'" style="margin-top:10px">修改 inputTwo</div>
+                inputTwo:{{inputTwo|json}}
+            </div>
         </div>
-      </div>
     </div>
     <script src="//cdn.bootcss.com/angular.js/1.4.7/angular.min.js"></script>
     <script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
     <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="build/ngAutoComplete.js"></script>
     <script>
-        angular.module('MyApp', ['ngAutoComplete'])
-        .config(function ($sceProvider) {
-          $sceProvider.enabled(false);
+        angular
+        .module('MyApp', ['ngAutoComplete'])
+        .config(function($sceProvider) {
+            $sceProvider.enabled(false);
         })
-        .controller('GlobalController', function ($scope, $timeout) {
-          var STR = 'tommy is so handsome that I can\'t control myself(a)! hey jude dont make it bad sing a sad song won\'t make it better';
-          $scope.dataOne = STR.split(' ').map(function (item) {
-            return {
-              id: Math.random(),
-              text: item
+        .controller('GlobalController', function($scope, $timeout) {
+            var STR = 'tommy is so handsome that I can\'t control myself(a)! ha hey jude dont make it bad sing a sad song won\'t make it better';
+            $scope.dataOne = STR.split(' ').map(function(item, index) {
+                return {
+                    id: index,
+                    text: item
+                };
+            });
+
+            $scope.dataTwo = STR.split(' ');
+
+            $scope.onchange = function(item) {
+                console.log(item);
             };
-          });
-          $scope.dataTwo = STR.split(' ');
-          $scope.onchange = function (item) {
-            console.log(item);
-          };
-          $scope.fnFormatter = function (item) {
-            return item.text;
-          };
-          $scope.fnParser = function (item) {
-            return item.id * 2;
-          };
-          $timeout(function () {
-            $scope.inputOne = {"id":0.35426890849364967,"text":"so"};
-          }, 2000);
+
+            $scope.fnFormatter = function(item) {
+                return item.text;
+            };
+
+            $scope.fnParser = function(item) {
+                return item.index;
+            };
+
+            $timeout(function() {
+                $scope.inputOne = 2;
+
+                $timeout(function() {
+                    $scope.dataOne = [{
+                        text: 'TEXT-100',
+                        index: 2
+                    },{
+                        text: 'TEXT-1000',
+                        index: 4
+                    },{
+                        text: 'TEXT-10000',
+                        index: 6
+                    }];
+                });
+            }, 2000);
         });
     </script>
 </body>
