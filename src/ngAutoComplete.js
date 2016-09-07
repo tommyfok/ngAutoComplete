@@ -226,11 +226,13 @@ angular
 
             function _getMatchItems () {
                 var matchList = [];
-                $scope.data.forEach(function (item) {
-                    if ($scope.parser(item) == $scope.input) {
-                        matchList.push(item);
-                    }
-                });
+                if ($scope.data && $scope.data.forEach) {
+                    $scope.data.forEach(function (item) {
+                        if ($scope.parser(item) == $scope.input) {
+                            matchList.push(item);
+                        }
+                    });
+                }
                 return matchList;
             }
 
