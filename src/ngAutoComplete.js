@@ -73,12 +73,11 @@ angular
 
             // 变量侦听
             $scope.$watch('domInput', _updateFilterList);
-            $scope.$watch('model', _onModelOrDataChange, true);
+            $scope.$watch('model', _onmodelchange, true);
             $scope.$watch('data', _onModelOrDataChange, true);
 
             // 私有函数
             function _setItem (item) {
-                var oldModel = angular.copy($scope.model);
                 if (item) {
                     // 设置一个item
                     currentItem = item;
@@ -94,8 +93,6 @@ angular
                 }
 
                 $scope.showMore = false;
-
-                $scope.onchange($scope.model, oldModel);
             }
 
             function _clearItem () {
@@ -221,6 +218,14 @@ angular
 
                 blurWithCommit = true;
                 inputElem.trigger('blur');
+            }
+
+            function _onmodelchange (newValue, oldValue) {
+                _onModelOrDataChange();
+
+                if (jstr(newValue) !== jstr(oldValue)) {
+                    $scope.onchange(newValue, oldValue);
+                }
             }
 
             function _onModelOrDataChange () {
