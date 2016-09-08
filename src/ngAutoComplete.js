@@ -62,6 +62,7 @@ angular
             $scope.formatter = $scope.formatter || _rawOutput;
             $scope.parser    = $scope.parser || _rawOutput;
             $scope.set       = _setItem;
+            $scope.onchange  = angular.isFunction($scope.onchange) ? $scope.onchange : angular.noop;
 
             // 事件侦听
             $scope.onfocus          = _onfocus;
@@ -77,6 +78,7 @@ angular
 
             // 私有函数
             function _setItem (item) {
+                var oldModel = angular.copy($scope.model);
                 if (item) {
                     // 设置一个item
                     currentItem = item;
@@ -92,6 +94,8 @@ angular
                 }
 
                 $scope.showMore = false;
+
+                $scope.onchange($scope.model, oldModel);
             }
 
             function _clearItem () {
