@@ -35,11 +35,12 @@ angular
             type: '@type',
             onchange: '=?',
             data: '=nacData',
-            input: '=ngModel',
+            model: '=ngModel',
             cleanOnBlur: '=?',
             placeholder: '@placeholder',
             formatter: '=?nacFormatter',
-            parser: '=?nacParser'
+            parser: '=?nacParser',
+            selectedItem: '=?'
         },
         require: 'ngModel',
         link: function ($scope, $elem, $attrs) {
@@ -52,6 +53,7 @@ angular
             var isBlur          = true;
             var isDirty         = false;
             var blurWithCommit  = true;
+            var jstr            = JSON.stringify;
 
             // 数据
             $scope.filteredList = $scope.data;
@@ -70,8 +72,8 @@ angular
 
             // 变量侦听
             $scope.$watch('domInput', _updateFilterList);
-            $scope.$watch('input', _oninputchange, true);
-            $scope.$watch('data', _oninputchange, true);
+            $scope.$watch('model', _onModelOrDataChange, true);
+            $scope.$watch('data', _onModelOrDataChange, true);
 
             // 私有函数
             function _setItem (item) {
@@ -79,12 +81,14 @@ angular
                     // 设置一个item
                     currentItem = item;
                     $scope.domInput = $scope.formatter(item);
-                    $scope.input = $scope.parser(item);
+                    $scope.model = $scope.parser(item);
+                    $scope.selectedItem = item;
                     blurWithCommit = false;
                     inputElem.trigger('blur');
                 } else {
                     $scope.domInput = '';
-                    $scope.input = undefined;
+                    $scope.model = undefined;
+                    $scope.selectedItem = undefined;
                 }
 
                 $scope.showMore = false;
@@ -205,7 +209,8 @@ angular
                         }
                     } else {
                         $scope.showMore = false;
-                        $scope.input = $scope.domInput;
+                        $scope.model = $scope.domInput;
+                        $scope.selectedItem = $scope.domInput;
                         currentItem = undefined;
                     }
                 }
@@ -214,13 +219,13 @@ angular
                 inputElem.trigger('blur');
             }
 
-            function _oninputchange () {
+            function _onModelOrDataChange () {
                 currentItem = undefined;
                 var matchList = _getMatchItems();
                 if (matchList.length === 1) {
                     _setItem(matchList[0]);
                 } else {
-                    $scope.domInput = $scope.input;
+                    $scope.domInput = $scope.model;
                 }
             }
 
@@ -228,7 +233,8 @@ angular
                 var matchList = [];
                 if ($scope.data && $scope.data.forEach) {
                     $scope.data.forEach(function (item) {
-                        if ($scope.parser(item) == $scope.input) {
+                        var outModel = $scope.parser(item);
+                        if (outModel === $scope.model || jstr(outModel) === jstr($scope.model)) {
                             matchList.push(item);
                         }
                     });

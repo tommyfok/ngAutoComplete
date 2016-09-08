@@ -15,7 +15,8 @@ onchange="onchange"
 ng-model="inputOne"
 nac-parser="fnParser"
 name="thisistheinputname"
-nac-formatter="fnFormatter"</pre>
+nac-formatter="fnFormatter"
+selected-item="inputOneSelected"</pre>
                 <div ng-auto-complete
                      nac-data="dataOne"
                      onchange="onchange"
@@ -23,11 +24,13 @@ nac-formatter="fnFormatter"</pre>
                      clean-on-blur="false"
                      nac-parser="fnParser"
                      name="thisistheinputname"
-                     nac-formatter="fnFormatter"></div>
+                     nac-formatter="fnFormatter"
+                     selected-item="inputOneSelected"></div>
                 <div class="btn btn-info"
                      ng-click="inputOne='ok one'"
                      style="margin-top:10px">修改 inputOne</div>
-                inputOne:{{inputOne|json}}
+                inputOne:{{inputOne|json}}<br>
+                inputOneSelected:{{inputOneSelected|json}}
                 <pre class="text-warning" style="margin:10px auto">
 nac-data="dataTwo"
 ng-model="inputTwo"
