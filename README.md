@@ -7,21 +7,21 @@ Auto Complete Module for AngularJS.
 1. With Bower :
    - `bower install --save ngAutoComplete`
 
-   Or download `ngAutoComplete.js` manually
+   Or download `build/ngAutoComplete.js` manually
 
-2. include `ngAutoComplete.js` after your `angular.js` file
+2. include `build/ngAutoComplete.js` after your `angular.js` file
 
-3. adding `ngAutoComplete` as a module dependency to your application
+3. add `ngAutoComplete` as a module dependency to your application
 
 ## Useage
 ```javascript
-$scope.pkgNames = ['tom', 'tommy', 'nancy', 'fun', 'chole'];
+$scope.pkgNames = ['apple', 'banana', 'car', 'desk', 'egg'];
 $scope.fnFormatter = function (item) {
-  // show 'tomtom' in the list for example
+  // show 'appleapple' as the first item in the list
   return item + item;
 };
 $scope.fnParser = function (item) {
-  // show 'tomtomtom' in the input for example
+  // select the first item will output 'appleappleapple' to ng-model
   return item + item + item;
 };
 ```
@@ -29,11 +29,12 @@ $scope.fnParser = function (item) {
 <div ng-auto-complete
      ng-model="pkgName"
      nac-data="pkgNames"
+     name="yourFieldName"
      clean-on-blur="true"
      nac-parser="fnParser"
      onchange="fnOnchange"
+     selected-item="selected"
      nac-formatter="fnFormatter"
-     name="yourFieldName"
      placeholder="Type in package name."></div>
 ```
 
