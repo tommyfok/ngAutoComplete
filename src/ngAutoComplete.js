@@ -208,18 +208,18 @@ angular
 
             function _defaultCommit () {
                 if (isDirty) {
-                    if ($scope.cleanOnBlur) {
-                        if ($scope.filteredList.length === 1) {
-                            _setItem($scope.filteredList[0]);
-                        } else {
+                    if ($scope.filteredList.length === 1) {
+                        _setItem($scope.filteredList[0]);
+                    } else {
+                        if ($scope.cleanOnBlur) {
                             _clearItem();
                             currentItem = undefined;
+                        } else {
+                            $scope.showMore = false;
+                            $scope.model = $scope.domInput;
+                            $scope.selectedItem = $scope.domInput;
+                            currentItem = undefined;
                         }
-                    } else {
-                        $scope.showMore = false;
-                        $scope.model = $scope.domInput;
-                        $scope.selectedItem = $scope.domInput;
-                        currentItem = undefined;
                     }
                 }
 
