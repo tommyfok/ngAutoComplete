@@ -54,6 +54,7 @@ angular
             var isDirty         = false;
             var blurWithCommit  = true;
             var jstr            = JSON.stringify;
+            var hasFormatter    = angular.isFunction($scope.formatter);
 
             // 数据
             $scope.filteredList = $scope.data;
@@ -193,7 +194,13 @@ angular
 
             function _updateFilterList () {
                 isDirty = true;
-                $scope.filteredList = $filter('filter')($scope.data, $scope.domInput);
+                if (hasFormatter && $scope.data && $scope.domInput) {
+                    $scope.filteredList = $scope.data.filter(function (item) {
+                        return $scope.formatter(item).indexOf($scope.domInput) > -1;
+                    });
+                } else {
+                    $scope.filteredList = $filter('filter')($scope.data, $scope.domInput);
+                }
                 $timeout(function () {
                     el.find('.nacInner > div').removeClass('active');
                 });
