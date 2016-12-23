@@ -270,3 +270,5 @@ angular
         }
     };
 }]);
+
+module.exports = 'ngAutoComplete';

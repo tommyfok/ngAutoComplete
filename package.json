@@ -1,5 +1,5 @@
 {
-  "name": "ng-autocomplete",
+  "name": "@tencent/ng-autocomplete",
   "version": "1.0.0",
   "description": "Auto Complete Module for AngularJS.",
   "main": "src/ngAutoComplete.js",
@@ -15,8 +15,7 @@
     "babel-core": "^6.13.2",
     "babel-loader": "^6.2.5",
     "babel-preset-es2015": "^6.13.2",
-    "less": "^2.7.1",
-    "less-loader": "^2.2.3"
+    "less": "^2.7.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
